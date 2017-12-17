@@ -59,7 +59,9 @@ window.App = {
      self.dispBlock();
       self.setWatcher();
 
-      
+      $.get(server_url + 'getOfficers', function(data){
+        officers = data.details;
+      });
 
       
     });
@@ -190,6 +192,7 @@ window.App = {
       $("#statspan").text('');
       $("#agnst").text('');
       $("#logdate").text('');
+      $("#sendaffirm").hide();
     }else{
       var meta;
       CaseLogger.deployed().then(function(instance){
@@ -223,6 +226,7 @@ window.App = {
       CaseLogger.deployed().then(function(instance){
         meta = instance;
         meta.getCase(changedval).then(function(d){
+          console.log(d, officers);
           $("#cdescspan").text(d[3]);
           $("#cstatspan").text(case_status[d[1]]);
           $("#cagnst").text(officers[d[0].c[0]-1].name);
@@ -235,6 +239,7 @@ window.App = {
 
 
   affirmCase: function(){
+    var self = this;
     var selectedval = $('#caseid').val();
     var meta;
     if(selectedval != 'none'){
@@ -247,7 +252,7 @@ window.App = {
             type: "POST",
             url: server_url + "affirmPost",
             data: {addr: web3.eth.accounts[0], caseId: selectedval},
-            error: (err)=> {if(err.status == 200){$("#sendaffirm").hide(); $("#status").text("Case Affirmed Successfully!")}},
+            error: (err)=> {if(err.status == 200){$("#sendaffirm").hide(); self.refreshAffirmCaseList(); $("#status").text("Case Affirmed Successfully!")}},
             dataType: 'json'
           });
         }
@@ -257,6 +262,7 @@ window.App = {
   },
 
   closeCase: function(){
+    var self = this;
     var selectedval = $('#closingcaseid').val();
     var desc = document.getElementById("cdesc").value;
     var meta;
@@ -265,6 +271,15 @@ window.App = {
         meta = instance;
         meta.resolveCase(selectedval, desc, {from: web3.eth.accounts[0]}).then(function(d){
           console.log(d);
+          if(d.hasOwnProperty("tx")){
+            $.ajax({
+              type: "POST",
+              url: server_url + "closeCase",
+              data: {addr: web3.eth.accounts[0], caseId: selectedval},
+              error: (err)=> {if(err.status == 200){self.refreshCloseCaseList(); $("#status").text("Case Closed Successfully!")}},
+              dataType: 'json'
+            });
+          }
         });
       });
     }
@@ -277,10 +292,17 @@ window.App = {
     $.get(server_url + "getCaseForPerson?addr=" + web3.eth.accounts[0], function(d){ 
       console.log(server_url + "getCaseForPerson?addr=" + web3.eth.accounts[0]);
       var casedata = d.caseConfirmed;
+      var raiseddata = d.caseRaised;
+      console.log(casedata);
       $.get(server_url + "getCaseCount", function(data){
         data = parseInt(data.count);
         for(var f = 0; f < data; f++){
-          $('#caseid').append($("<option></option>").attr("value",f+1).text(casedata.indexOf("" + (f+1))?(f+1)+ '*': (f+1))); 
+          console.log(raiseddata.indexOf(f+1), raiseddata)
+          if(raiseddata.indexOf(f+1) > -1){
+          $('#caseid').append($("<option></option>").attr("value",f+1).text((f+1)+ '#')); 
+          }else{
+          $('#caseid').append($("<option></option>").attr("value",f+1).text(casedata.indexOf("" + (f+1)) == -1?(f+1)+ '*': (f+1))); 
+        }
           //$('#closingcaseid').append($("<option></option>").attr("value",f+1).text(f+1)); 
         }
       });
@@ -322,6 +344,7 @@ window.App = {
             self.refreshCloseCaseList();
           }else{
             $("#btnholder button").show();
+            self.refreshOfficerList();
             //document.getElementById("log").style.display = "block";
           }
         });
@@ -365,7 +388,7 @@ window.App = {
           $.ajax({
             type: "POST",
             url: server_url + "saveCase",
-            data: {against: against, desc: desc, loggingDate: date},
+            data: {against: against, desc: desc, loggingDate: date, addr: web3.eth.accounts[0]},
             error: (err)=> {if(err.status == 200){self.refreshAffirmCaseList(); $("#status").text("New Case Added Successfully!")}},
             dataType: 'json'
           });

@@ -47,7 +47,8 @@ contract CaseLogger {
     mapping(uint => address) private officerbyid;
     mapping(address => Person) public persons;
     mapping(uint => address) public personbyid;
-    //mapping(bytes32 => uint) private caseConfirmed;
+   // mapping(uint => address) private assignedcases;
+    
 
     mapping(uint => Case) private cases;
 
@@ -102,10 +103,11 @@ contract CaseLogger {
         //check if user affirming case have that case
         require(isCaseAvailable(caseId));
         require(isPerson(msg.sender));
+        require(cases[caseId].loggedby != msg.sender);
         uint affirmations = cases[caseId].affirmations;
         persons[msg.sender].caseConfirmed.push(caseId);
         cases[caseId].affirmations = affirmations+1;
-        if (affirmations == minAffirmators) {
+        if (cases[caseId].affirmations == minAffirmators) {
             escalateCase(caseId);
         }
         return(caseId);
@@ -167,6 +169,8 @@ contract CaseLogger {
     function resolveCase(uint caseId, string comments) public {
         // check isofficer and if officer is incharge of that case
         require(isCaseAvailable(caseId));
+        require(isOfficer(msg.sender));
+        require(officerbyid[cases[caseId].pendingwith] == msg.sender);
         closeCase(caseId, comments);
         //segrigate closed cases at front end
     }
