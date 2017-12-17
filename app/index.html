@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MetaCoin - Truffle Webpack Demo w/ Frontend</title>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+  <script src="./app.js"></script>
+</head>
+<body>
+  <h1>CORRUPTION</h1>
+  <h2>case Logger</h2><br/>
+  <div id="btnholder">
+  <button id="logbtn" style="display:none" onclick="App.dispBlock('log')">Log Case</button>
+  <button id="affirmbtn" style="display:none" onclick="App.dispBlock('affirm')">Affirm Case</button>
+  <button id="closebtn" style="display:none" onclick="App.dispBlock('close')">Close Case</button>
+  <button id="addobtn" style="display:none" onclick="App.dispBlock('addofficer')">Add Officer</button>
+  <button id="addpbtn" style="display:none" onclick="App.dispBlock('addperson')">Add Person</button>
+</div>
+  <br/>
+  <br/>
+  <br/>
+  <div id="log">
+  <h1>Log Case</h1>
+  <br><label for="against">Case Against:</label><select id="against">
+   
+  </select>
+  <br><label for="desc">Case Description:</label><textarea type="text" id="desc"></textarea>
+  <!-- <br><label for="name">Name :</label><input type="text" id="name" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"></input> -->
+  <br><br><button id="send" onclick="App.logCase()">Submit Case</button>
+
+
+  <!-- <br><br><button id="send" onclick="App.addPerson()">Add Person</button>
+  <br><br><button id="send" onclick="App.getPerson()">Get Person</button> -->
+
+
+  </div>
+  
+  <div id="affirm">
+
+    <h1>Affirm Case</h1>
+    <br><label for="caseid">Case Id:</label><select onchange="App.caseIdChange()" id="caseid" ></select>
+    <br><label for="descspan">Case Description:</label><span type="text" id="descspan"></span> 
+    <br><label for="statspan">Case Status:</label><span type="text" id="statspan"></span> 
+    <br><label for="agnst">Against:</label><span type="text" id="agnst"></span> 
+    <br><label for="logdate">Logged at:</label><span type="text" id="logdate"></span> 
+    <br><br><button id="sendaffirm" onclick="App.affirmCase()">Confirm Allegation</button>
+  
+  
+    <!-- <br><br><button id="send" onclick="App.addPerson()">Add Person</button>
+    <br><br><button id="send" onclick="App.getPerson()">Get Person</button> -->
+  
+
+  </div>
+
+
+  <div id="close">
+
+    <h1>Close Case</h1>
+    <br><label for="closingcaseid">Case Id:</label><select onchange="App.closeCaseIdChange()" id="closingcaseid" ></select>
+    <br><label for="cdescspan">Case Description:</label><span type="text" id="cdescspan"></span> 
+    <br><label for="cstatspan">Case Status:</label><span type="text" id="cstatspan"></span> 
+    <br><label for="cagnst">Against:</label><span type="text" id="cagnst"></span> 
+    <br><label for="clogdate">Logged at:</label><span type="text" id="clogdate"></span> 
+    <br><label for="armation">Affirmations :</label><span type="text" id="armation"></span> 
+    <br><label for="rem">Escalation after :</label><span type="text" id="rem"></span>
+    <br><label for="cdesc">Closing Comments:</label><textarea type="text" id="cdesc" placeholder="Closing Response"></textarea>
+    <br><br><button id="send" onclick="App.closeCase()">Close Case</button>
+  
+  
+    <!-- <br><br><button id="send" onclick="App.addPerson()">Add Person</button>
+    <br><br><button id="send" onclick="App.getPerson()">Get Person</button> -->
+  
+  </div>
+
+
+
+  <div id="addofficer">
+    
+        <h1>Officer Details</h1>
+        <br><label for="officername">Name:</label><input type="text" id="officername" ></input>
+        <br><label for="officeraddr">Address :</label><input type="text" id="officeraddr" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"></input> 
+        <br><label for="supervisor">Supervisor:</label><select id="supervisor" >
+          <option value="none">None</option>
+        </select>
+        <br><br><button id="send" onclick="App.addOfficer()">Add Officer</button>
+      
+      
+        <!-- <br><br><button id="send" onclick="App.addPerson()">Add Person</button>
+        <br><br><button id="send" onclick="App.getPerson()">Get Person</button> -->
+      
+      </div>
+
+
+
+      <div id="addperson">
+        
+            <h1>Person Details</h1>
+            <br><label for="personname">Name:</label><input type="text" id="personname" ></input>
+            <br><label for="personaddr">Address :</label><input type="text" id="personaddr" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"></input> 
+            <br><br><button id="send" onclick="App.addPerson()">Add Person</button>
+          
+          
+            <!-- <br><br><button id="send" onclick="App.addPerson()">Add Person</button>
+            <br><br><button id="send" onclick="App.getPerson()">Get Person</button> -->
+          
+          </div>
+
+
+
+  <br><br>
+  <br>
+
+    <span id="status"></span>
+</body>
+</html>
